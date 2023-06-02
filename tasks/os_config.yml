@@ -1,0 +1,53 @@
+---
+# tasks file for os_neutron
+- name: "Create neutron user"
+  openstack.cloud.identity_user:
+    auth: "{{ os_neutron_cloud_auth }}"
+    name: neutron
+    password: "{{ os_neutron_ka_password }}"
+    domain: default
+    state: present
+  no_log: true
+  delegate_to: localhost
+  become: false
+
+
+- name: "Add neutron user to project service with admin role"
+  openstack.cloud.role_assignment:
+    auth: "{{ os_neutron_cloud_auth }}"
+    user: neutron
+    role: admin
+    project: service
+    state: present
+  delegate_to: localhost
+  become: false
+
+- name: "Create neutron service"
+  openstack.cloud.catalog_service:
+    auth: "{{ os_neutron_cloud_auth }}"
+    state: present
+    name: neutron
+    type: network
+    description: OpenStack networking service
+  delegate_to: localhost
+  become: false
+
+- name: "Create endpoint service for neutron"
+  become: false
+  openstack.cloud.endpoint:
+    auth: "{{ os_neutron_cloud_auth }}"
+    service: neutron
+    endpoint_interface: "{{ item.interface }}"
+    url: "{{ item.url }}"
+    region: "{{ item.region }}"
+    state: present
+  loop:
+    - region: Nation1
+      interface: public
+      url: http://10.0.0.50:9696
+    - region: Nation1
+      interface: internal
+      url: http://10.0.0.50:9696
+    - region: Nation1
+      interface: admin
+      url: http://10.0.0.50:9696

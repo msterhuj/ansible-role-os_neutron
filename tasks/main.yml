@@ -1,2 +1,4 @@
 ---
-# tasks file for os_neutron
+- name: "Include openstack configurator"
+  include_tasks: "os_config.yml"
+  run_once: true

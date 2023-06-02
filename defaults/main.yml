@@ -1,2 +1,11 @@
 ---
 # defaults file for os_neutron
+os_neutron_config_type: "both" # both, controller, compute
+
+os_neutron_db_host: "localhost"
+os_neutron_db_user: "neutron"
+os_neutron_db_pass: "NEUTRON_DBPASS"
+
+os_neutron_db_connection: "mysql+pymysql://{{ os_neutron_db_user }}:{{ os_neutron_db_pass }}@{{ os_neutron_db_host }}/neutron"
+
+os_neutron_ka_password: "NEUTRON_PASS"
