@@ -2,3 +2,7 @@
 - name: "Include openstack configurator"
   include_tasks: "os_config.yml"
   run_once: true
+
+- name: "Include Network self-service configurator"
+  include_tasks: "network_self_service.yml"
+  when: os_neutron_config_network_options == 2

@@ -1,0 +1,41 @@
+---
+- name: "Install required package"
+  apt:
+    package:
+      - neutron-server
+      - neutron-plugin-ml2
+      - neutron-openvswitch-agent
+      - neutron-l3-agent
+      - neutron-dhcp-agent
+      - neutron-metadata-agent
+
+- name: "Push config files"
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "root"
+    group: "neutron"
+    mode: 0640
+  loop_control:
+    label: "{{ item.src }}"
+  loop:
+    - src: "ml2_conf.ini.j2"
+      dest: "/etc/neutron/plugins/ml2/ml2_conf.ini"
+    - src: "ml2_conf.ini.j2"
+      dest: "/etc/neutron/plugins/ml2/ml2_conf.ini"
+    - src: "openvswitch_agent.ini.j2"
+      dest: "/etc/neutron/plugins/ml2/openvswitch_agent.ini"
+    - src: "l3_agent.ini.j2"
+      dest: "/etc/neutron/l3_agent.ini"
+    - src: "dhcp_agent.ini.j2"
+      dest: "/etc/neutron/dhcp_agent.ini"
+
+- name: "Set iptable bridge to 1"
+  sysctl:
+    name: "{{ item }}"
+    value: "1"
+    sysctl_set: yes
+    state: present
+  with_items:
+    - "net.bridge.bridge-nf-call-iptables"
+    - "net.bridge.bridge-nf-call-ip6tables"
