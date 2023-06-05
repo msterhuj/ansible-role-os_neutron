@@ -10,7 +10,7 @@ notify_nova_on_port_data_changes = true
 #state_path = /var/lib/neutron
 
 # The host IP to bind to. (host address value)
-#bind_host = 0.0.0.0
+bind_host = 0.0.0.0
 
 # The port to bind to (port value)
 # Minimum value: 0
@@ -31,8 +31,7 @@ auth_strategy = keystone
 core_plugin = ml2
 
 # The service plugins Neutron will use (list value)
-service_plugins = ml2
-
+service_plugins = router
 # The base MAC address Neutron will use for VIFs. The first 3 octets will
 # remain unchanged. If the 4th octet is not 00, it will also be used. The
 # others will be randomly generated. (string value)

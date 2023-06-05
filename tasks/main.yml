@@ -6,3 +6,32 @@
 - name: "Include Network self-service configurator"
   include_tasks: "network_self_service.yml"
   when: os_neutron_config_network_options == 2
+
+- name: "Apply controller configurator"
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "root"
+    group: "neutron"
+  loop_control:
+    label: "{{ item.src }}"
+  loop:
+    - src: "metadata_agent.ini.j2"
+      dest: "/etc/neutron/metadata_agent.ini"
+    - src: "neutron.conf.j2"
+      dest: "/etc/neutron/neutron.conf"
+
+- name: "Run neutron DB sync"
+  command: su -s /bin/sh -c "neutron-db-manage --config-file /etc/neutron/neutron.conf --config-file /etc/neutron/plugins/ml2/ml2_conf.ini upgrade head" neutron
+
+- name: "Restart service"
+  service:
+    name: "{{ item }}"
+    state: restarted
+  loop:
+    - nova-api
+    - neutron-server
+    - neutron-openvswitch-agent
+    - neutron-dhcp-agent
+    - neutron-metadata-agent
+    - neutron-l3-agent
