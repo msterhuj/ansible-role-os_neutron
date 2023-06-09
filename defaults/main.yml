@@ -31,5 +31,5 @@ os_nova_auth_url: "http://{{ ansible_fqdn }}:5000"
 os_nova_username: "nova"
 os_nova_password: "NOVA_PASS"
 
-os_neutron_openvswitch_provider_network_interface: "br-int"
+os_neutron_openvswitch_provider_network_interface: "br0"
 os_neutron_openvswitch_vxlan_local_ip: "{{ ansible_default_ipv4.address }}"
